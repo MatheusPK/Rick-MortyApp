@@ -1,19 +1,16 @@
 //
-//  ViewController.swift
+//  CharacterViewController.swift
 //  Rick&MortyApp
 //
-//  Created by Matheus Pereira Kulick on 17/10/25.
+//  Created by Matheus Pereira Kulick on 20/10/25.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class CharacterViewController: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
     }
-
-
 }
-
