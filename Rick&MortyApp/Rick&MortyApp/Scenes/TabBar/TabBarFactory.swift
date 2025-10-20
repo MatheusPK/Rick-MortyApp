@@ -14,7 +14,7 @@ enum TabBarFactory: SceneFactory {
         let tabBarController = UITabBarController()
         tabBarController.tabBar.isTranslucent = false
         
-        let characterVC = CharacterFactory.build()
+        let characterVC = CharactersFactory.build()
         
         let episodesVC = UIViewController()
         episodesVC.view.backgroundColor = .blue

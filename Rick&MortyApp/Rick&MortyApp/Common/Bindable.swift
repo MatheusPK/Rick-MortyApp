@@ -12,8 +12,9 @@ class Bindable<T> {
     
     var value: T {
         didSet {
-            listeners.forEach { listener in
-                listener(value)
+            listeners.forEach { [weak self] listener in
+               guard let self else { return }
+                listener(self.value)
             }
         }
     }
