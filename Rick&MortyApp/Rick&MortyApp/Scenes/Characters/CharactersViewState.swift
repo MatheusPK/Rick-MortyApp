@@ -7,6 +7,6 @@
 
 enum CharactersViewState {
     case loading
-    case charactersList
+    case charactersList(charactersResponse: CharactersResponse)
     case error
 }

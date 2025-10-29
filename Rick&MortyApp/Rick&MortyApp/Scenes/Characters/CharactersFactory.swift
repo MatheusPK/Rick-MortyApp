@@ -11,7 +11,8 @@ enum CharactersFactory: SceneFactory {
     typealias Dependencies = Void?
     
     static func build(with dependencies: Void? = nil) -> UIViewController {
-        let viewModel = CharactersViewModel()
+        let requestProvider = RequestProviderImp()
+        let viewModel = CharactersViewModel(requestProvider: requestProvider)
         let vc = CharactersViewController(viewModel: viewModel)
         vc.tabBarItem = UITabBarItem(title: "Characters", image: UIImage(systemName: "person.fill"), tag: 0)
         return vc
