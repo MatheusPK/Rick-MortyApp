@@ -10,15 +10,26 @@ import Foundation
 enum CharactersRequest {
     case characters(page: Int)
     case character(id: Int)
+    case characterImage(url: URLComponents)
 }
 
 extension CharactersRequest: RequestType {
     var scheme: String {
-        "https"
+        switch self {
+        case .characters, .character:
+            "https"
+        case .characterImage(let url):
+            url.scheme ?? "https"
+        }
     }
     
     var host: String {
-        "rickandmortyapi.com"
+        switch self {
+        case .characters, .character:
+            "rickandmortyapi.com"
+        case .characterImage(let url):
+            url.host ??  "rickandmortyapi.com"
+        }
     }
     
     var path: String {
@@ -27,6 +38,8 @@ extension CharactersRequest: RequestType {
             "/api/character"
         case .character(let id):
             "/api/character/\(id)"
+        case .characterImage(let url):
+             url.path ?? ""
         }
     }
     
@@ -41,6 +54,8 @@ extension CharactersRequest: RequestType {
             return [pageQueryParameter]
         case .character(let id):
             return []
+        case .characterImage(let url):
+            return url.queryItems ?? []
         }
     }
 }

@@ -26,20 +26,7 @@ final class CharactersViewModel: CharactersViewModelProtocol {
     
     func fetchCharacters() {
         state.value = .loading
-        requestProvider.make(request: CharactersRequest.characters(page: 0)) { (result: (Result<CharactersResponse?, RequestError>)) in
-            switch result {
-            case .success(let charactersResponse):
-                guard let charactersResponse else {
-                    self.state.value = .error
-                    return
-                }
-                
-                self.state.value = .charactersList(charactersResponse: charactersResponse)
-    
-            case .failure:
-                self.state.value = .error
-            }
-        }
+        makeCharactersRequest()
     }
     
     func didTapFavorite() {
@@ -56,5 +43,24 @@ final class CharactersViewModel: CharactersViewModelProtocol {
     
     func bind(_ listener: @escaping (CharactersViewState?) -> Void) {
         state.bind(listener)
+    }
+}
+
+extension CharactersViewModel {
+    private func makeCharactersRequest() {
+        requestProvider.make(request: CharactersRequest.characters(page: 0)) { (result: (Result<CharactersResponse?, RequestError>)) in
+            switch result {
+            case .success(let charactersResponse):
+                guard let charactersResponse else {
+                    self.state.value = .error
+                    return
+                }
+                
+                self.state.value = .charactersList(charactersResponse: charactersResponse)
+    
+            case .failure:
+                self.state.value = .error
+            }
+        }
     }
 }

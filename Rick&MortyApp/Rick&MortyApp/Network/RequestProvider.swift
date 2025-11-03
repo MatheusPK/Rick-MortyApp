@@ -8,10 +8,11 @@ import Foundation
 
 protocol RequestProvider {
     func make<T: Decodable>(request: RequestType, completion: @escaping (Result<T?, RequestError>) -> Void)
+    func fetchData(request: RequestType, completion: @escaping (Result<Data?, RequestError>) -> Void)
 }
 
 final class RequestProviderImp: RequestProvider {
-    func make<T: Decodable>(request: RequestType, completion: @escaping (Result<T?, RequestError>) -> Void) {
+    func fetchData(request: any RequestType, completion: @escaping (Result<Data?, RequestError>) -> Void) {
         guard let urlRequest = request.urlRequest() else {
             completion(.failure(.invalidURL))
             return
@@ -33,14 +34,27 @@ final class RequestProviderImp: RequestProvider {
                 return
             }
             
-            do {
-                let decodedData = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(decodedData))
-            } catch {
-                completion(.failure(.decodingFailed(error)))
-            }
+            completion(.success(data))
         }
         
         dataTask.resume()
+    }
+    
+    func make<T: Decodable>(request: RequestType, completion: @escaping (Result<T?, RequestError>) -> Void) {
+        fetchData(request: request) { result in
+            switch result {
+            case .success(let data):
+                guard let data else { return completion(.success(nil)) }
+                
+                do {
+                    let decodedData = try JSONDecoder().decode(T.self, from: data)
+                    completion(.success(decodedData))
+                } catch {
+                    completion(.failure(.decodingFailed(error)))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 }
